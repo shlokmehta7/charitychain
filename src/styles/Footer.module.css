@@ -1,0 +1,40 @@
+.footer {
+  background-color: var(--blue-dark);
+  color: white;
+  padding: 2rem 1.5rem;
+  margin-top: 4rem;
+  border-top-left-radius: var(--rounded);
+  border-top-right-radius: var(--rounded);
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+}
+
+.copy {
+  font-size: 0.95rem;
+  color: #e0eaff;
+}
+
+.links {
+  display: flex;
+  gap: 1.25rem;
+}
+
+.links a {
+  color: #dbeafe;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: color 0.3s ease;
+}
+
+.links a:hover {
+  color: white;
+}

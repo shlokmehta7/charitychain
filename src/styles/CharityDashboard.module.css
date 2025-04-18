@@ -1,0 +1,92 @@
+.container {
+  padding: 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: 2rem;
+  color: #1d4ed8;
+  margin-bottom: 1.5rem;
+}
+
+.campaignsSection, .formSection {
+  margin-bottom: 3rem;
+}
+
+.campaignList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.campaignCard {
+  background: #f1f7ff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+  width: 300px;
+}
+
+.image {
+  border-bottom: 1px solid #ccc;
+}
+
+.cardContent {
+  padding: 1rem;
+}
+
+.cardContent h3 {
+  color: #1e40af;
+  margin-bottom: 0.5rem;
+}
+
+.status {
+  display: inline-block;
+  margin-top: 0.5rem;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: bold;
+}
+
+.active {
+  background-color: #dbeafe;
+  color: #1d4ed8;
+}
+
+.completed {
+  background-color: #dcfce7;
+  color: #15803d;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background: #f9fbff;
+  padding: 1rem;
+  border-radius: 10px;
+}
+
+.form input, .form textarea {
+  padding: 0.75rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+.form button {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  padding: 0.75rem;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.form button:hover {
+  background-color: #1d4ed8;
+}
