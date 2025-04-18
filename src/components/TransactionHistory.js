@@ -1,7 +1,7 @@
 export default function TransactionHistory() {
   const transactions = [
     { campaign: 'Clean Water', amount: '1 ETH', date: '2025-04-01' },
-    { campaign: 'Food Drive', amount: '0.75 ETH', date: '2025-03-21' }
+    { campaign: 'Food Drive', amount: '0.75 ETH', date: '2025-04-04' }
   ]
 
   return (
