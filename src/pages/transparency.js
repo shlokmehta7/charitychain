@@ -1,51 +1,46 @@
-import styles from '../styles/Transparency.module.css'
-import PageWrapper from '../components/PageWrapper'
+import React, { useEffect, useState } from 'react';
+import styles from '../styles/Transparency.module.css';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
+import { getAllCampaigns } from '../utils/contractFunctions';
 
-const donationLedger = [
-  { donor: "Alice", campaign: "Clean Water for Rural India", amountEth: 1.2, date: "2025-04-01" },
-  { donor: "Bob", campaign: "Solar Power Villages", amountEth: 0.8, date: "2025-03-31" },
-  { donor: "Charlie", campaign: "Back-to-School Kits", amountEth: 0.6, date: "2025-04-02" },
-  { donor: "Alice", campaign: "Back-to-School Kits", amountEth: 0.3, date: "2025-04-05" }
-]
+export default function TransparencyPage() {
+  const [campaigns, setCampaigns] = useState([]);
 
-const usdRate = 3200
+  useEffect(() => {
+    async function fetchData() {
+      const all = await getAllCampaigns();
+      setCampaigns(all);
+    }
 
-export default function Transparency() {
+    fetchData();
+  }, []);
+
   return (
-    <PageWrapper>
-      <div className={styles.container}>
-        <h1 className={styles.title}>Donation Transparency Ledger</h1>
-
-        <div className={styles.filters}>
-          <input type="text" placeholder="Search by donor or campaign..." />
-          <button className={styles.exportBtn}>📥 Export CSV</button>
+    <div className={styles.container}>
+      <Header />
+      <main className={styles.main}>
+        <h1 className={styles.heading}>Transparency Dashboard</h1>
+        <p className={styles.description}>All campaigns on the platform are listed below for full transparency.</p>
+        <div className={styles.grid}>
+          {campaigns.length === 0 ? (
+            <p>Loading campaigns...</p>
+          ) : (
+            campaigns.map((c) => (
+              <div key={c.id} className={styles.campaignCard}>
+                <div className={styles.cardContent}>
+                  <h3>{c.description}</h3>
+                  <p><strong>Goal:</strong> {c.goalAmount} BNB</p>
+                  <p><strong>Raised:</strong> {c.totalDonated} BNB</p>
+                  <p>Status: {c.goalReached ? "Goal Reached" : "In Progress"}</p>
+                  <p>Funds Withdrawn: {c.fundsWithdrawn ? "Yes" : "No"}</p>
+                </div>
+              </div>
+            ))
+          )}
         </div>
-
-        <div className={styles.tableContainer}>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>Donor</th>
-                <th>Campaign</th>
-                <th>ETH</th>
-                <th>USD</th>
-                <th>Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {donationLedger.map((entry, idx) => (
-                <tr key={idx}>
-                  <td>{entry.donor}</td>
-                  <td>{entry.campaign}</td>
-                  <td>{entry.amountEth}</td>
-                  <td>${(entry.amountEth * usdRate).toLocaleString()}</td>
-                  <td>{entry.date}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </PageWrapper>
-  )
+      </main>
+      <Footer />
+    </div>
+  );
 }

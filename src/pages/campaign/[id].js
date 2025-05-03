@@ -1,72 +1,101 @@
-import Image from 'next/image'
-import styles from '../../styles/Campaign.module.css'
-import PageWrapper from '../../components/PageWrapper'
+import { useRouter } from 'next/router';
+import { useEffect, useState, useContext } from 'react';
+import PageWrapper from '../../components/PageWrapper';
+import {
+  getCampaignDetails,
+  donateToCampaign,
+  withdrawFunds
+} from '../../utils/contractFunctions';
+import { WalletContext } from '../../context/WalletContext';
+import styles from '../../styles/CampaignDetail.module.css';
 
-const campaign = {
-  id: 1,
-  title: "Clean Water for Rural India",
-  goalEth: 10,
-  raisedEth: 6.5,
-  usdRate: 3200,
-  image: "/images/water-campaign.jpg",
-  description: "Support building wells and purifiers in underprivileged areas. Your donations go towards equipment, installation, and maintenance.",
-  updates: [
-    "10 wells have been installed.",
-    "300+ families now have access to clean water.",
-    "New filtration systems ordered."
-  ]
-}
 
-export default function CampaignDetail() {
-  const raisedUsd = campaign.raisedEth * campaign.usdRate
-  const goalUsd = campaign.goalEth * campaign.usdRate
-  const progress = Math.min((campaign.raisedEth / campaign.goalEth) * 100, 100)
+export default function CampaignPage() {
+  const router = useRouter();
+  const { id } = router.query;
+
+  const [campaign, setCampaign] = useState(null);
+  const [amount, setAmount] = useState("");
+
+  const { wallet: walletAddress } = useContext(WalletContext);
+
+  useEffect(() => {
+    if (!id) return;
+    async function load() {
+      const data = await getCampaignDetails(id);
+      setCampaign(data);
+    }
+    load();
+  }, [id]);
+
+  const handleDonate = async (e) => {
+    e.preventDefault();
+    try {
+      await donateToCampaign(id, amount);
+      alert("Thank you for your donation!");
+      setAmount("");
+      const updated = await getCampaignDetails(id);
+      setCampaign(updated);
+    } catch (err) {
+      console.error(err);
+      alert("Donation failed.");
+    }
+  };
+
+  const handleWithdraw = async () => {
+    try {
+      await withdrawFunds(id);
+      alert("Funds withdrawn successfully!");
+      const updated = await getCampaignDetails(id);
+      setCampaign(updated);
+    } catch (err) {
+      console.error(err);
+      alert("Withdrawal failed.");
+    }
+  };
+
+  if (!campaign) return <PageWrapper><p>Loading campaign...</p></PageWrapper>;
 
   return (
     <PageWrapper>
       <div className={styles.container}>
-        <h1 className={styles.title}>{campaign.title}</h1>
+        <div className={styles.wrapper}>
+          <h2 className={styles.heading}>Campaign #{campaign.id}</h2>
+          <p className={styles.detail}><span className={styles.label}>Description:</span> {campaign.description}</p>
+          <p className={styles.detail}><span className={styles.label}>Creator:</span> {campaign.creator}</p>
+          <p className={styles.detail}><span className={styles.label}>Goal:</span> {campaign.goalAmount} BNB</p>
+          <p className={styles.detail}><span className={styles.label}>Raised:</span> {campaign.totalDonated} BNB</p>
+          <p className={styles.status}>
+            {campaign.goalReached ? '✅ Goal Reached' : '⏳ Still Fundraising'}
+          </p>
 
-        <Image
-          src={campaign.image}
-          alt={campaign.title}
-          width={800}
-          height={400}
-          className={styles.image}
-        />
+          <form onSubmit={handleDonate} className={styles.form}>
+            <input
+              type="number"
+              step="0.01"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              className={styles.input}
+              placeholder="Enter BNB amount"
+              required
+            />
+            <button type="submit" className={styles.donateButton}>
+              Donate
+            </button>
+          </form>
 
-        <p className={styles.description}>{campaign.description}</p>
-
-        {/* Stats */}
-        <div className={styles.stats}>
-          <div>
-            <p>🎯 <strong>Goal:</strong> {campaign.goalEth} ETH (~${goalUsd.toLocaleString()})</p>
-            <p>💰 <strong>Raised:</strong> {campaign.raisedEth} ETH (~${raisedUsd.toLocaleString()})</p>
-          </div>
-
-          <div className={styles.progressBar}>
-            <div className={styles.progressFill} style={{ width: `${progress}%` }}></div>
-          </div>
-          <p className={styles.percentText}>{Math.floor(progress)}% of goal reached</p>
-        </div>
-
-        {/* Donation Form */}
-        <div className={styles.donateBox}>
-          <h2>Donate Now</h2>
-          <input type="number" placeholder="Amount in ETH" />
-          <input type="text" placeholder="Your name (optional)" />
-          <textarea placeholder="Message or note" rows={3}></textarea>
-          <button>Confirm Donation</button>
-        </div>
-
-        {/* Campaign Updates */}
-        <div className={styles.updates}>
-          <h3>Campaign Updates</h3>
-          <ul>
-            {campaign.updates.map((update, idx) => <li key={idx}>🟢 {update}</li>)}
-          </ul>
+          {walletAddress === campaign.creator.toLowerCase() &&
+            campaign.goalReached &&
+            !campaign.fundsWithdrawn && (
+              <div className={styles.withdrawSection}>
+                <button onClick={handleWithdraw} className={styles.withdrawButton}>
+                  Withdraw Funds
+                </button>
+              </div>
+          )}
         </div>
       </div>
     </PageWrapper>
-  )
+
+  );
 }

@@ -1,75 +1,60 @@
-import styles from '../styles/Home.module.css'
-import Link from 'next/link'
-import Image from 'next/image'
-import PageWrapper from '../components/PageWrapper'
-
-const featuredCampaigns = [
-  {
-    id: 1,
-    title: "Clean Water for Rural India",
-    goal: "10 ETH",
-    raised: "6.5 ETH",
-    usdGoal: "$32,000",
-    usdRaised: "$20,800",
-    image: "/images/water-campaign.jpg",
-    description: "Support building wells and purifiers in underprivileged areas."
-  },
-  {
-    id: 2,
-    title: "Back-to-School Kits for Kids",
-    goal: "8 ETH",
-    raised: "3 ETH",
-    usdGoal: "$25,600",
-    usdRaised: "$9,600",
-    image: "/images/school-campaign.jpg",
-    description: "Provide school supplies and learning kits to rural students."
-  },
-  {
-    id: 3,
-    title: "Solar Power for Villages",
-    goal: "15 ETH",
-    raised: "10 ETH",
-    usdGoal: "$48,000",
-    usdRaised: "$32,000",
-    image: "/images/solar-campaign.jpg",
-    description: "Bring sustainable electricity to remote villages."
-  }
-]
+import { useEffect, useState } from "react";
+import styles from '../styles/Home.module.css';
+import Link from 'next/link';
+import Image from 'next/image';
+import PageWrapper from '../components/PageWrapper';
+import { getAllCampaigns } from '../utils/contractFunctions';
 
 export default function Home() {
+  const [campaigns, setCampaigns] = useState([]);
+
+  useEffect(() => {
+    async function loadCampaigns() {
+      try {
+        const data = await getAllCampaigns();
+        setCampaigns(data);
+      } catch (err) {
+        console.error("Failed to load campaigns", err);
+      }
+    }
+    loadCampaigns();
+  }, []);
+
   return (
     <PageWrapper>
-      <div className={styles.homeContainer}>
+      <div className={styles.container}>
         {/* Hero Section */}
         <section className={styles.hero}>
-          <h1>Transparency. Trust. Impact.</h1>
-          <p>Donate with confidence. Track your impact in real-time.</p>
+          <h1 className={styles.heading}>Transparency. Trust. Impact.</h1>
+          <p className={styles.subheading}>Donate with confidence. Track your impact in real-time.</p>
           <div className={styles.heroButtons}>
-            <Link href="/campaign/1"><button className={styles.primary}>Donate Now</button></Link>
+            <Link href="/create"><button className={styles.primary}>Create Campaign</button></Link>
             <Link href="/transparency"><button className={styles.secondary}>View Transparency</button></Link>
           </div>
         </section>
 
-        {/* Featured Campaigns */}
-        <section className={styles.featured}>
-          <h2>Featured Campaigns</h2>
-          <div className={styles.cards}>
-            {featuredCampaigns.map((c) => (
-              <div key={c.id} className={styles.card}>
+        {/* Live Campaigns */}
+        <section className={styles.main}>
+          <h2 className={styles.sectionHeading}>Live Campaigns</h2>
+          <div className={styles.grid}>
+            {campaigns.map((campaign) => (
+              <div key={campaign.id} className={styles.campaignCard}>
                 <Image
-                  src={c.image}
-                  alt={c.title}
+                  src="/images/default-campaign.jpg"
+                  alt={`Campaign ${campaign.id}`}
                   width={400}
-                  height={250}
-                  className={styles.image}
+                  height={200}
+                  className={styles.campaignImage}
                 />
                 <div className={styles.cardContent}>
-                  <h3>{c.title}</h3>
-                  <p>{c.description}</p>
-                  <p><strong>Goal:</strong> {c.goal} (~{c.usdGoal})</p>
-                  <p><strong>Raised:</strong> {c.raised} (~{c.usdRaised})</p>
-                  <Link href={`/campaign/${c.id}`}>
-                    <button className={styles.viewBtn}>View Campaign</button>
+                  <h3>{campaign.description}</h3>
+                  <p><strong>Goal:</strong> {campaign.goalAmount} BNB</p>
+                  <p><strong>Raised:</strong> {campaign.totalDonated} BNB</p>
+                  <span className={`${styles.status} ${campaign.goalReached ? styles.completed : styles.active}`}>
+                    {campaign.goalReached ? "Completed" : "Active"}
+                  </span>
+                  <Link href={`/campaign/${campaign.id}`}>
+                    <button className={styles.donateButton}>Donate Now</button>
                   </Link>
                 </div>
               </div>
@@ -78,5 +63,5 @@ export default function Home() {
         </section>
       </div>
     </PageWrapper>
-  )
+  );
 }

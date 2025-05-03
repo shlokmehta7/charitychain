@@ -1,62 +1,51 @@
-import styles from '../styles/CharityDashboard.module.css'
-import Image from 'next/image'
-import PageWrapper from '../components/PageWrapper'
-
-const campaigns = [
-  {
-    id: 1,
-    title: "Clean Water for Rural India",
-    goal: 10,
-    raised: 6.5,
-    image: "/images/water-campaign.jpg",
-    status: "Active"
-  },
-  {
-    id: 2,
-    title: "Solar Power Villages",
-    goal: 15,
-    raised: 15,
-    image: "/images/solar-campaign.jpg",
-    status: "Completed"
-  }
-]
+import React, { useEffect, useState, useContext } from 'react';
+import styles from '../styles/CharityDashboard.module.css';
+import { WalletContext } from '../context/WalletContext';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
+import { getAllCampaigns } from '../utils/contractFunctions';
 
 export default function CharityDashboard() {
-  return (
-    <PageWrapper>
-      <div className={styles.container}>
-        <h1 className={styles.title}>Charity Dashboard</h1>
+  const { wallet } = useContext(WalletContext);
+  const [campaigns, setCampaigns] = useState([]);
 
-        <section className={styles.campaignsSection}>
-          <h2>Your Campaigns</h2>
-          <div className={styles.campaignList}>
-            {campaigns.map(c => (
-              <div key={c.id} className={styles.campaignCard}>
-                <Image src={c.image} alt={c.title} width={300} height={180} className={styles.image} />
+  useEffect(() => {
+    async function fetchMyCampaigns() {
+      const allCampaigns = await getAllCampaigns();
+      const myCampaigns = allCampaigns.filter(c => c.creator.toLowerCase() === wallet.toLowerCase());
+      setCampaigns(myCampaigns);
+    }
+
+    if (wallet) {
+      fetchMyCampaigns();
+    }
+  }, [wallet]);
+
+  return (
+    <div className={styles.container}>
+      <Header />
+      <main className={styles.main}>
+        <h1 className={styles.heading}>My Campaigns</h1>
+        <div className={styles.grid}>
+          {campaigns.length === 0 ? (
+            <p>No campaigns created yet.</p>
+          ) : (
+            campaigns.map((campaign) => (
+              <div key={campaign.id} className={styles.campaignCard}>
                 <div className={styles.cardContent}>
-                  <h3>{c.title}</h3>
-                  <p><strong>Goal:</strong> {c.goal} ETH</p>
-                  <p><strong>Raised:</strong> {c.raised} ETH</p>
-                  <span className={`${styles.status} ${c.status === 'Completed' ? styles.completed : styles.active}`}>
-                    {c.status}
+                  <h3>{campaign.description}</h3>
+                  <p><strong>Goal:</strong> {campaign.goalAmount} BNB</p>
+                  <p><strong>Raised:</strong> {campaign.totalDonated} BNB</p>
+                  <span className={`${styles.status} ${campaign.goalReached ? styles.completed : styles.active}`}>
+                    {campaign.goalReached ? "Completed" : "Active"}
                   </span>
                 </div>
               </div>
-            ))}
-          </div>
-        </section>
-
-        <section className={styles.formSection}>
-          <h2>Create New Campaign</h2>
-          <form className={styles.form}>
-            <input type="text" placeholder="Campaign Title" required />
-            <input type="number" placeholder="Goal in ETH" required />
-            <textarea placeholder="Short Description" rows={4}></textarea>
-            <input type="url" placeholder="Image URL" />
-            <button type="submit">Create Campaign</button>
-          </form>
-        </section>
-      </div>
-    </PageWrapper>
-  )
+            ))
+          )}
+        </div>
+      </main>
+      <Footer />
+    </div>
+  );
 }

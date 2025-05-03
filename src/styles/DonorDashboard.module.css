@@ -1,77 +1,100 @@
 .container {
-  padding: 2rem;
-  max-width: 900px;
-  margin: 0 auto;
-  animation: fadeIn 0.5s ease;
-}
-
-.title {
-  font-size: 2rem;
-  color: var(--blue-dark);
-  margin-bottom: 1.5rem;
-}
-
-.summary {
+  min-height: 100vh;
+  width: 100%;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: var(--gray-bg);
-  padding: 1rem 1.5rem;
-  border-radius: var(--rounded);
-  margin-bottom: 2rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  flex-direction: column;
+  background-color: #f9f9f9;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.statLabel {
-  font-size: 0.9rem;
-  color: #666;
+.main {
+  flex: 1;
+  padding: 2rem;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-.summary h2 {
-  margin: 0.25rem 0;
-  font-size: 1.6rem;
-  color: var(--blue-dark);
-}
-
-.usd {
-  color: #333;
-  font-weight: 500;
-  font-size: 0.95rem;
-}
-
-.downloadBtn {
-  background-color: var(--blue);
-  color: white;
-  padding: 0.6rem 1.2rem;
-  border-radius: var(--rounded);
-  border: none;
+.heading {
+  font-size: 2rem;
   font-weight: bold;
-  transition: var(--transition);
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #1d4ed8;
 }
 
-.downloadBtn:hover {
-  background-color: var(--blue-dark);
+.subheading {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #1e3a8a;
+  margin: 2rem 0 1rem;
 }
 
-.list {
+.grid {
   display: grid;
-  gap: 1.2rem;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+  padding-bottom: 2rem;
+  justify-items: center;
+  width: 100%;
 }
 
-.card {
-  background: white;
-  padding: 1rem 1.5rem;
-  border-left: 5px solid var(--blue);
-  border-radius: var(--rounded);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
-  transition: transform 0.3s ease;
+.donationCard {
+  background: #f1f7ff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  max-width: 320px;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1rem;
+  transition: transform 0.2s ease;
 }
 
-.card:hover {
+.donationCard:hover {
   transform: translateY(-4px);
 }
 
-.card h3 {
-  margin-bottom: 0.5rem;
-  color: var(--blue-dark);
+.cardContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.cardContent h3 {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #1e40af;
+}
+
+.cardContent p {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.withdrawButton {
+  margin-top: 0.75rem;
+  padding: 0.5rem 1rem;
+  background-color: #16a34a;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background-color 0.2s ease;
+}
+
+.withdrawButton:hover {
+  background-color: #15803d;
+}
+
+.withdrawnLabel {
+  margin-top: 0.75rem;
+  color: #16a34a;
+  font-weight: bold;
+  font-size: 0.95rem;
 }
