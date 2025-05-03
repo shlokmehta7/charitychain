@@ -36,7 +36,6 @@ export default function DonorDashboard() {
       setLoadingId(campaignId);
       await withdrawFunds(campaignId);
       alert("Funds withdrawn!");
-      // Refresh campaigns
       const refreshed = await getAllCampaigns();
       const mine = refreshed.filter(c => c.creator.toLowerCase() === wallet.toLowerCase());
       setMyCampaigns(mine);

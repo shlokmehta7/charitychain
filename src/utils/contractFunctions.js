@@ -23,16 +23,15 @@ export async function getAllCampaigns() {
   return campaigns;
 }
 
-// ✅ Fetch total donations by a user
 export async function getUserTotalDonations(address) {
   const { contract } = await connectContract();
   const value = await contract.getTotalDonationsByUser(address);
-  return ethers.utils.formatEther(value); // converts from wei to BNB
+  return ethers.utils.formatEther(value);
 }
 
 export async function createCampaign(description, goalInEth) {
   const { contract } = await connectContract();
-  const goal = ethers.utils.parseEther(goalInEth); // BNB → wei
+  const goal = ethers.utils.parseEther(goalInEth);
   const tx = await contract.createCampaign(description, goal);
   await tx.wait();
 }

@@ -17,7 +17,7 @@ export default function CreateCampaign() {
     const file = e.target.files[0];
     if (file) {
       setImage(file);
-      setPreview(URL.createObjectURL(file)); // generate temporary preview
+      setPreview(URL.createObjectURL(file));
     }
   };
 

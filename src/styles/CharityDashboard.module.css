@@ -9,7 +9,7 @@
 .main {
   flex: 1;
   padding: 2rem;
-  width: 100%; /* Ensure it takes full width */
+  width: 100%;
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -39,11 +39,10 @@
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  /* Remove fixed width and height */
   display: flex;
   flex-direction: column;
   transition: transform 0.2s ease;
-  height: 100%; /* Make cards take full height of their grid cell */
+  height: 100%;
 }
 
 .campaignCard:hover {
